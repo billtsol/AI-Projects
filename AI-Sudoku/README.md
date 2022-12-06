@@ -1,3 +1,3 @@
-# Sudoku - Python
+# Sudoku
 
-AI
+## Solve Sudoku with BackTracking algorithm
