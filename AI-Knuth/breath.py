@@ -187,29 +187,24 @@ patoma = "Πάτωμα"
 
 timeout = time.time() + 60
 
-graph = {
-    4: [],
-}
 
-visited = []  # List for visited nodes.
-queue = []  # Initialize a queue
-
-
-def bfs(visited, graph, node):  # function for BFS
+def bfs(queue, visited, graph, node):
+    flag = False  # function for BFS
     visited.append(node)
     queue.append(node)
 
     while True and queue:          # Creating loop to visit each node
         if time.time() > timeout:
             print('time')
-            break
+            flag = True
 
         m = queue.pop(0)
         intM = m
 
         if (m == 17):  # 13
-            print("Finds")
-            break
+            print("Find")
+            flag = True
+
         if isinstance(intM, float):
             # continue
             intMf = int(intM)
@@ -222,8 +217,8 @@ def bfs(visited, graph, node):  # function for BFS
             # graph[m].append(intMf)
             # graph[intMf] = []
             if (intMf == 17):  # 13
-                print("Finds")
-                break
+                print("Find")
+                flag = True
 
             if intMf < 170:
                 intMp = math.factorial(intMf)
@@ -247,14 +242,23 @@ def bfs(visited, graph, node):  # function for BFS
             if neighbour not in visited:
                 visited.append(neighbour)
                 queue.append(neighbour)
+        if flag:
+            break
 
+
+graph = {
+    4: [],
+}
+
+queue = []  # Initialize a queue
+visited = []  # List for visited nodes.
 
 # Driver Code
 print("Following is the Breadth-First Search")
-bfs(visited, graph, 4)    # function calling
+bfs(queue, visited, graph, 4)    # function calling
 
 
 # print(math.sqrt(  math.factorial(170)  ))
 
-# for i in graph:
-#     print(i , " : " ,graph[i])
+for i in graph:
+    print(i, " : ", graph[i])
