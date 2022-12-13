@@ -7,49 +7,52 @@ import BigNumber  # import BigNumber module
 from BigNumber.BigNumber import factorial, sqrt  # import BigNumber functions
 
 # Global Varialables
-START_POINT = "4"
-END_POINT = "5"
+START_POINT = "4.0"
+
+END_POINT = BigNumber.BigNumber.BigNumber("13")
+
+MAX_POINT = BigNumber.BigNumber.BigNumber("668950291344913")
 
 ROOT = "Ρίζα"
 FACTORIAL = "Παραγοντικό"
 FLOOR = "Πάτωμα"
 
-START_TIME = time() + 60
+START_TIME = time() + 60.0
+
+
 # function for BFS
-
-
 def bfs(queue, visited, graph, node):
     visited.append(node)
     queue.append(node)
 
     while time() < START_TIME and queue:
-        node = queue.pop(0)
-        bigNode = BigNumber.BigNumber.BigNumber(node)
-        positionString = node
+        bigNode = BigNumber.BigNumber.BigNumber(queue.pop(0))
 
-        if (positionString == END_POINT):
-            print("FIND")
-            break
-        # if isinstance(bigNode, float):
-        #     newChildren = str(bigNode.__floor__())
-        #     graph[positionString].append(newChildren)
-        #     graph[newChildren] = []
-        # else:
-        newChildren = str(factorial(bigNode))
-        graph[positionString].append(newChildren)
-        graph[newChildren] = []
+        if (bigNode == END_POINT):  # Number found
+            return True
 
-        newChildren = str(sqrt(bigNode))
-        graph[positionString].append(newChildren)
-        graph[newChildren] = []
+        if (MAX_POINT > bigNode):
+            try:
+                newNode = BigNumber.BigNumber.BigNumber(factorial(bigNode))
+                graph[str(bigNode)]["list"].append(str(newNode))
+                graph[str(newNode)] = {
+                    "list": [],
+                    "prev": str(bigNode),
+                    "how": "with " + FACTORIAL
+                }
+            except:
+                pass
 
-        for i in graph:
-            print(i, " : ", graph[i])
-        print()
-        print()
-        print()
+        newNode = str(sqrt(bigNode))
+        if newNode not in visited:
+            graph[str(bigNode)]["list"].append(str(newNode))
+            graph[str(newNode)] = {
+                "list": [],
+                "prev": str(bigNode),
+                "how": "with " + ROOT + " and " + FLOOR
+            }
 
-        for neighbour in graph[node]:
+        for neighbour in graph[str(bigNode)]["list"]:
             if neighbour not in visited:
                 visited.append(neighbour)
                 queue.append(neighbour)
@@ -58,14 +61,27 @@ def bfs(queue, visited, graph, node):
 # -------------Main-------------
 # Initialize varialables
 graph = {
-    START_POINT: [],
+    START_POINT: {
+        "list": [],
+        "prev": "-1",
+        "how": ""
+    },
 }
+
 
 visited = []  # List for visited nodes
 queue = []  # Initialize a queue
 
-
 bfs(queue, visited, graph, START_POINT)
 
-for i in graph:
-    print(i, " : ", graph[i])
+i = str(END_POINT)
+solution = []
+while i != START_POINT:
+    solution.insert(0, [i, graph[i]["how"]])
+    i = graph[i]["prev"]
+
+solution.insert(0, [i, graph[i]["how"]])
+
+print(solution[0][0])
+for i in range(1, len(solution)):
+    print(solution[i][1], " ", solution[i][0])

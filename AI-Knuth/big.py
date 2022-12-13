@@ -8,21 +8,25 @@ from BigNumber.BigNumber import factorial, sqrt
 
 
 # a = 10000000
-a = 4
-c = BigNumber.BigNumber.BigNumber(a)
+p = "4"
 
-# for i in range(10):
-k = factorial(c)
-x = factorial(k)
-
-print("Python BigNumebr Factorial ", k, "    ", c.__class__)
-# x = factorial(c)
-# y = sqrt(c)
-# z = factorial(y)
-
-# o = y + BigNumber.BigNumber.BigNumber("0.32")
-
-# o = o.__floor__()
+p = BigNumber.BigNumber.BigNumber(p)
 
 
-# print(o)
+p = BigNumber.BigNumber.BigNumber(factorial(p))
+p = BigNumber.BigNumber.BigNumber(factorial(p))
+p = BigNumber.BigNumber.BigNumber(factorial(p))
+
+
+r = sqrt(p)
+for i in range(80):
+    r = sqrt(r)
+    print(r)
+
+
+# p = BigNumber.BigNumber.BigNumber(factorial(p))
+print("Python BigNumebr Factorial ", p, "    ", p.__class__)
+print("Python BigNumebr root ", r, "    ", p.__class__)
+
+if (p < r):
+    print(True)
