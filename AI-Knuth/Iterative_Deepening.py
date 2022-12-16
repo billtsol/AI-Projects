@@ -4,12 +4,12 @@ from time import process_time  # import time library
 import BigNumber  # import BigNumber module
 from BigNumber.BigNumber import factorial, sqrt  # import BigNumber functions
 
-LIMIT = 6
+LIMIT = 8
 # Global Varialables
 START_POINT = "4.0"
 
 # CHANGE THIS NUMBER
-END_POINT = BigNumber.BigNumber.BigNumber("1")
+END_POINT = BigNumber.BigNumber.BigNumber("6")
 
 # Large random number, set by creator.
 MAX_POINT = BigNumber.BigNumber.BigNumber("690000000000000")
@@ -23,8 +23,6 @@ RUNTIME = 60.0
 STOP = process_time() + RUNTIME
 # process_time - It does not include the waiting time for resources
 
-# bathos 18
-
 
 class Tree():
     def __init__(self, node, parent, process):
@@ -36,7 +34,8 @@ class Tree():
     def printTree(self):
         print(self.node)
         for i in range(len(self.children)):
-            self.children[i].printTree()
+            if self.children[i].parent != None:
+                self.children[i].printTree()
 
 
 def check(currNode, visited):
@@ -47,37 +46,39 @@ def check(currNode, visited):
 
 
 def iterative_deepening_dfs(start, target):
-    # Start by doing DFS with a depth of 1, keep doubling depth until we reach the "bottom" of the tree or find the node we're searching for
+    visited = []
     depth = 1
-    bottom_reached = False  # Variable to keep track if we have reached the bottom of the tree
+    bottom_reached = False  # Δείχνει εάν φτάσαμε στο πάτωμα του δέντρου
     while not bottom_reached:
-        # One of the "end nodes" of the search with this depth has to still have children and set this to False again
         result, bottom_reached = iterative_deepening_dfs_rec(
-            start, target, 0, depth)
+            start, target, 0, depth, visited)
+
         if result is not None:
             print("Increasing depth to " + str(depth))
-
-            # We've found the goal node while doing DFS with this max depth
+            # Βρέθηκε ο κόμβος που ψάχναμε
+            print(visited)
             return result
 
-        # We haven't found the goal node, but there are still deeper nodes to search through
+        # Δεν βρήκαμε λύση, και αυξάνουμε το βάθος του δέντρου
         depth *= 2
-        # print("Increasing depth to " + str(depth))
-
-    # Bottom reached is True.
-    # We haven't found the node and there were no more nodes that still have children to explore at a higher depth.
+        # if depth == LIMIT:
+        #     break
+    # Το bottom_reached εγινε True.
+    # Δεν βρήκαμε τον κόμβο και δεν υπήρχαν άλλοι κόμβοι που έχουν ακόμα παιδιά για εξερεύνηση σε μεγαλύτερο βάθος.
     return None
 
 
-def iterative_deepening_dfs_rec(node, target, current_depth, max_depth):
-    # print("Visiting Node " + node.node)
+def iterative_deepening_dfs_rec(node, target, current_depth, max_depth, visited):
+    # print(node.node)
+    if node.node not in visited:
+        visited.append(node.node)
+
     bigNode = BigNumber.BigNumber.BigNumber(node.node)
-    if bigNode == target:
-        # We have found the goal node we we're searching for
+    if bigNode == target:  # βρήκαμε λύση
         print("Found the node we're looking for!")
         return node, True
 
-    if (process_time() > STOP):
+    if (process_time() > STOP):  # τέλειωσε ο χρόνος
         print("time")
         sys.exit()
 
@@ -87,26 +88,25 @@ def iterative_deepening_dfs_rec(node, target, current_depth, max_depth):
             # try to create the new BigNumber.
             newNode = BigNumber.BigNumber.BigNumber(factorial(bigNode))
             t = Tree(str(newNode), node, FACTORIAL)
-            # node = Tree(str(newNode), currNode, "with " + FACTORIAL)
         except:
             newNode = sqrt(bigNode)
             t = Tree(str(newNode), node, ROOT + " " + FLOOR)
-
     else:
         newNode = sqrt(bigNode)
         t = Tree(str(newNode), node, ROOT + " " + FLOOR)
 
-    node.children.append(t)
+    if t.node not in visited:
+        node.children.append(t)
 
     newNode = sqrt(bigNode)
     t = Tree(str(newNode), node, ROOT + " " + FLOOR)
-    node.children.append(t)
+    if t.node not in visited:
+        node.children.append(t)
 
     if current_depth == max_depth:
-        # print("Current maximum depth reached, returning...")
-        # We have reached the end for this depth...
+        # Φτάσαμε στο μέγιστο βάθος του δέντρου.
         if len(node.children) > 0:
-            # ...but we have not yet reached the bottom of the tree
+            # Δεν έχουμε ελέγξει όλα τα παιδιά ακόμα
             return None, False
         else:
             return None, True
@@ -114,14 +114,19 @@ def iterative_deepening_dfs_rec(node, target, current_depth, max_depth):
     # Recurse with all children
     bottom_reached = True
     for i in range(len(node.children)):
-        result, bottom_reached_rec = iterative_deepening_dfs_rec(node.children[i], target, current_depth + 1,
-                                                                 max_depth)
+        result, bottom_reached_rec = iterative_deepening_dfs_rec(
+            node.children[i], target, current_depth + 1, max_depth, visited)
+
         if result is not None:
-            # We've found the goal node while going down that child
+            # βρήκαμε λύση κατεβαίνοντας στο βάθος
             return result, True
+
+        if (node.children[i].node in visited):
+            visited.remove(node.children[i].node)
+
         bottom_reached = bottom_reached and bottom_reached_rec
 
-    # We've gone through all children and not found the goal node
+    # είδαμε όλα τα παιδιά στο βάθος και δεν βρήκαμε λύση
     return None, bottom_reached
 
 

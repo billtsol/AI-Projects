@@ -1,3 +1,17 @@
-2.0  rootfloor
-1.0  rootfloor
-Time: 0.0006 seconds
+24.0  factorial
+6.20448401733239e+23  factorial
+787685471322.0  rootfloor
+887516.0  rootfloor
+942.0  rootfloor
+30.0  rootfloor
+2.65252859812191e+32  factorial
+1.6286585271695e+16  rootfloor
+127618906.0  rootfloor
+11296.0  rootfloor
+106.0  rootfloor
+10.0  rootfloor
+3628800.0  factorial
+1904.0  rootfloor
+43.0  rootfloor
+6.0  rootfloor
+Time: 14.923 seconds

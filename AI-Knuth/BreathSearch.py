@@ -7,7 +7,7 @@ from BigNumber.BigNumber import factorial, sqrt  # import BigNumber functions
 START_POINT = "4.0"
 
 # CHANGE THIS NUMBER
-END_POINT = BigNumber.BigNumber.BigNumber("100")
+END_POINT = BigNumber.BigNumber.BigNumber("6")
 # 597
 # Large random number, set by creator.
 MAX_POINT = BigNumber.BigNumber.BigNumber("690000000000000")
