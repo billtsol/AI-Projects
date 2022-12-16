@@ -1,0 +1,26 @@
+4.0 ->
+with factorial 24.0
+with factorial 6.20448401733239e+23
+with root and floor 787685471322.0
+with root and floor 887516.0
+with root and floor 942.0
+with root and floor 30.0
+with root and floor 5.0
+with factorial 120.0
+with root and floor 10.0
+with root and floor 3.0
+with factorial 6.0
+with factorial 720.0
+with factorial 2.6012189435658e+1746
+with root and floor 1.61282948372288e+873
+with root and floor 4.01600483530944e+436
+with root and floor 2.00399721439663e+218
+with root and floor 1.41562608565844e+109
+with root and floor 3.76248067856626e+54
+with root and floor 1.93971149364184e+27
+with root and floor 44042155869596.0
+with root and floor 6636426.0
+with root and floor 2576.0
+with root and floor 50.0
+with root and floor 7.0
+0.0617 seconds
