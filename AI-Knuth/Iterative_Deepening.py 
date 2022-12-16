@@ -4,12 +4,12 @@ from time import process_time  # import time library
 import BigNumber  # import BigNumber module
 from BigNumber.BigNumber import factorial, sqrt  # import BigNumber functions
 
-LIMIT = 50
+LIMIT = 7
 # Global Varialables
 START_POINT = "4.0"
 
 # CHANGE THIS NUMBER
-END_POINT = BigNumber.BigNumber.BigNumber("3.76248067856626e+54")
+END_POINT = BigNumber.BigNumber.BigNumber("5")
 
 # Large random number, set by creator.
 MAX_POINT = BigNumber.BigNumber.BigNumber("690000000000000")
@@ -18,8 +18,9 @@ ROOT = "root"
 FACTORIAL = "factorial"
 FLOOR = "floor"
 
+RUNTIME = 60.0
 # Limit: one CPU mitune
-STOP = process_time() + 60.0
+STOP = process_time() + RUNTIME
 # process_time - It does not include the waiting time for resources
 
 # bathos 18
@@ -47,14 +48,10 @@ def check(currNode, visited):
 
 def ibfs(queue, root, limit):  # function for BFS
     queue.append(root)
+    visited = []
 
-    maxLimit = 0
-    if limit == 1:
-        maxLimit = 3
-    elif limit >= 2:
-        maxLimit = 2 ** (limit + 1) - 1
-
-    while queue and maxLimit >= 0:
+    currN = root
+    while queue and limit >= 0:
 
         node = None
         currNode = queue.pop(0)
@@ -65,7 +62,7 @@ def ibfs(queue, root, limit):  # function for BFS
         if (bigNode == END_POINT):  # Number found.
             return currNode
 
-        if (process_time() > STOP):  # Timeout
+        if (process_time() > STOP or limit == 0):  # Timeout
             return False
 
         if (MAX_POINT > bigNode):
@@ -93,7 +90,7 @@ def ibfs(queue, root, limit):  # function for BFS
         newNode = sqrt(bigNode)  # Root of node
         newNode = newNode.__floor__()  # and floor of node in the same time
         newNode = str(newNode)
-        node = Tree(str(newNode), currNode, "with " + ROOT + " and " + FLOOR)
+        node = Tree(str(newNode), currNode, ROOT + " " + FLOOR)
 
         queue.append(node)
 
@@ -114,7 +111,7 @@ for i in range(LIMIT+1):
     found = ibfs(queue, root, i)
     if found.__class__ == Tree:
         depth = i
-        resultTime = str(process_time() - (STOP - 60))
+        resultTime = str(process_time() - (STOP - RUNTIME))
         break
 
 if found.__class__ == Tree:

@@ -1,5 +1,4 @@
 # IMPORTS
-import sys  # import system library
 from time import process_time  # import time library
 import BigNumber  # import BigNumber module
 from BigNumber.BigNumber import factorial, sqrt  # import BigNumber functions
@@ -8,7 +7,7 @@ from BigNumber.BigNumber import factorial, sqrt  # import BigNumber functions
 START_POINT = "4.0"
 
 # CHANGE THIS NUMBER
-END_POINT = BigNumber.BigNumber.BigNumber("7")
+END_POINT = BigNumber.BigNumber.BigNumber("100")
 # 597
 # Large random number, set by creator.
 MAX_POINT = BigNumber.BigNumber.BigNumber("690000000000000")
@@ -17,8 +16,9 @@ ROOT = "root"
 FACTORIAL = "factorial"
 FLOOR = "floor"
 
+RUNTIME = 60.0
 # Limit: one CPU mitune
-STOP = process_time() + 120.0
+STOP = process_time() + RUNTIME
 # process_time - It does not include the waiting time for resources
 
 
@@ -69,7 +69,7 @@ def bfs(queue, visited, root):  # function for BFS
                 # if node is not in visited nodes, add the node in queue
                 if check(str(newNode), visited):
                     node = Tree(
-                        str(newNode), currNode, "with " + FACTORIAL)
+                        str(newNode), currNode, FACTORIAL)
                     queue.append(node)
                     currNode.children.append(node)
             except:
@@ -78,7 +78,7 @@ def bfs(queue, visited, root):  # function for BFS
         newNode = sqrt(bigNode)  # Root of node
         newNode = newNode.__floor__()  # and floor of node in the same time
         newNode = str(newNode)
-        node = Tree(str(newNode), currNode, "with " + ROOT + " and " + FLOOR)
+        node = Tree(str(newNode), currNode, ROOT + " " + FLOOR)
 
         # if node is not in visited nodes, add the node in queue
         if check(str(newNode), visited):
@@ -99,7 +99,7 @@ queue = []  # Initialize a queue
 
 found = bfs(queue, visited, root)
 
-resultTime = str(process_time() - (STOP - 120))
+resultTime = str(process_time() - (STOP - RUNTIME))
 
 
 if found.__class__ == Tree:
@@ -109,16 +109,14 @@ if found.__class__ == Tree:
         solutionTree.insert(0, found)
         found = found.parent
 
-    print(solutionTree[0].node, " ->")
-    for i in range(1, len(solutionTree)):
-        print(solutionTree[i].process, " ", solutionTree[i].node)
-
-    print(resultTime[:6])
-
     # Add solution in file
-    f = open("solution.txt", "w")
-    f.write(solutionTree[0].node + " ->\n")
+    f = open("Breath_First_solution.txt", "w")
     for i in range(1, len(solutionTree)):
-        f.write(solutionTree[i].process + " " + solutionTree[i].node+"\n")
-    f.write(resultTime[:6] + " seconds"+"\n")
+        if (ROOT in solutionTree[i].process):
+            f.write(solutionTree[i].node + "  " + ROOT + FLOOR + "\n")
+            # f.write(FLOOR + "\n")
+        else:
+            f.write(solutionTree[i].node + "  " + FACTORIAL + "\n")
+
+    f.write("Time: " + resultTime[:6] + " seconds"+"\n")
     f.close()
