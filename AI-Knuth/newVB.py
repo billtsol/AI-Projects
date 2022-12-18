@@ -1,16 +1,17 @@
 # IMPORTS
 from time import process_time  # import time library
 import BigNumber  # import BigNumber module
-from BigNumber.BigNumber import factorial, sqrt  # import BigNumber functions
+from BigNumber.BigNumber import factorial  # import BigNumber functions
 
+from mpmath import *
 # Global Varialables
-START_POINT = "4.0"
+START_POINT = 4
 
 # CHANGE THIS NUMBER
-END_POINT = BigNumber.BigNumber.BigNumber("13")
+END_POINT = 13
 # 597
 # Large random number, set by creator.
-MAX_POINT = BigNumber.BigNumber.BigNumber("690000000000000")
+MAX_POINT = 9999999999999
 
 ROOT = "root"
 FACTORIAL = "factorial"
@@ -35,9 +36,9 @@ class Tree():
             self.children[i].printTree()
 
 
-def check(currNode, visited):
-    for i in visited:
-        if currNode == i.node:
+def check(currNode, visitedNodes):
+    for node in visitedNodes:
+        if node.node == currNode:
             return False
     return True
 
@@ -47,12 +48,12 @@ def bfs(queue, visited, root):  # function for BFS
     queue.append(root)
 
     while queue:
+
         node = None
         currNode = queue.pop(0)
         visited.append(currNode)
 
-        bigNode = BigNumber.BigNumber.BigNumber(
-            currNode.node)  # New node for checking
+        bigNode = currNode.node
 
         if (bigNode == END_POINT):  # Number found.
             return currNode
@@ -60,30 +61,31 @@ def bfs(queue, visited, root):  # function for BFS
         if (process_time() > STOP):  # Timeout
             return False
 
-        if (MAX_POINT > bigNode):
-            try:
-                # check if the bigNumber > MAX_POINT.
-                # try to create the new BigNumber.
-                newNode = BigNumber.BigNumber.BigNumber(factorial(bigNode))
+        if (MAX_POINT > bigNode and floor(bigNode) == bigNode):
+            newNode = fac(bigNode)
+            # if node is not in visited nodes, add the node in queue
+            if check(newNode, visited):
+                node = Tree(newNode, currNode, FACTORIAL)
+                queue.append(node)
+                currNode.children.append(node)
 
-                # if node is not in visited nodes, add the node in queue
-                if check(str(newNode), visited):
-                    node = Tree(
-                        str(newNode), currNode, FACTORIAL)
-                    queue.append(node)
-                    currNode.children.append(node)
-            except:
-                pass
+        if bigNode >= 2:
+            newNode = sqrt(bigNode)  # Root of node
+            # newNode = newNode.__floor__()  # and floor of node in the same time
+            node = Tree(newNode, currNode, ROOT)
 
-        newNode = sqrt(bigNode)  # Root of node
-        newNode = newNode.__floor__()  # and floor of node in the same time
-        newNode = str(newNode)
-        node = Tree(str(newNode), currNode, ROOT + " " + FLOOR)
+            # if node is not in visited nodes, add the node in queue
+            if check(newNode, visited):
+                currNode.children.append(node)
+                queue.append(node)
 
-        # if node is not in visited nodes, add the node in queue
-        if check(str(newNode), visited):
-            currNode.children.append(node)
-            queue.append(node)
+        if floor(bigNode) != bigNode:
+            newNode = floor(bigNode)  # and floor of node in the same time
+            node = Tree(newNode, currNode,  FLOOR)
+            # if node is not in visited nodes, add the node in queue
+            if check(newNode, visited):
+                currNode.children.append(node)
+                queue.append(node)
 
     return False
 
@@ -92,7 +94,6 @@ def bfs(queue, visited, root):  # function for BFS
 # Initialize varialables
 
 root = Tree(START_POINT, None, "")  # Create Tree
-
 
 visited = []  # List for visited nodes
 queue = []  # Initialize a queue
@@ -113,10 +114,14 @@ if found.__class__ == Tree:
     f = open("Breath_First_solution.txt", "w")
     for i in range(1, len(solutionTree)):
         if (ROOT in solutionTree[i].process):
-            f.write(solutionTree[i].node + "  " + ROOT + FLOOR + "\n")
-            # f.write(FLOOR + "\n")
+            f.write(str(solutionTree[i].node) + "  " + ROOT + "\n")
+        elif FLOOR in solutionTree[i].process:
+            f.write(str(solutionTree[i].node) + "  " + FLOOR + "\n")
         else:
-            f.write(solutionTree[i].node + "  " + FACTORIAL + "\n")
+            f.write(str(solutionTree[i].node) + "  " + FACTORIAL + "\n")
 
     f.write("Time: " + resultTime[:6] + " seconds"+"\n")
     f.close()
+
+
+# root.printTree()

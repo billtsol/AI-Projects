@@ -121,7 +121,7 @@ def iterative_deepening_dfs_rec(node, target, current_depth, max_depth, visited)
             # βρήκαμε λύση κατεβαίνοντας στο βάθος
             return result, True
 
-        if (node.children[i].node in visited):
+        if (node.children[i].node in visited): # Διαγραφη του 
             visited.remove(node.children[i].node)
 
         bottom_reached = bottom_reached and bottom_reached_rec
