@@ -8,7 +8,7 @@ START_POINT = 4.0
 
 # CHANGE THIS NUMBER
 END_POINT = 13
-# 597/
+
 # Large random number, set by creator.
 MAX_POINT = 9999999  # 9.999.999
 
@@ -17,6 +17,7 @@ FACTORIAL = "Factorial"
 FLOOR = "Floor"
 
 RUNTIME = 60.0
+
 # Limit: one CPU mitune
 STOP = process_time() + RUNTIME
 # process_time - It does not include the waiting time for resources
