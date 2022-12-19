@@ -9,13 +9,13 @@ START_POINT = 4.0
 
 # CHANGE THIS NUMBER
 END_POINT = 5
-# 597/
+
 # Large random number, set by creator.
 MAX_POINT = 9999999  # 9.999.999
 
-ROOT = "root"
-FACTORIAL = "factorial"
-FLOOR = "floor"
+ROOT = "Root"
+FACTORIAL = "Factorial"
+FLOOR = "Floor"
 
 RUNTIME = 60.0
 # Limit: one CPU mitune
