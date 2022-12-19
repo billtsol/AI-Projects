@@ -1,16 +1,17 @@
 # IMPORTS
 from time import process_time  # import time library
 import BigNumber  # import BigNumber module
-from BigNumber.BigNumber import factorial, sqrt  # import BigNumber functions
+from BigNumber.BigNumber import factorial  # import BigNumber functions
 
+from mpmath import *
 # Global Varialables
-START_POINT = "4.0"
+START_POINT = 4.0
 
 # CHANGE THIS NUMBER
-END_POINT = BigNumber.BigNumber.BigNumber("13")
-# 597
+END_POINT = 5
+# 597/
 # Large random number, set by creator.
-MAX_POINT = BigNumber.BigNumber.BigNumber("690000000000000")
+MAX_POINT = 9999999  # 9.999.999
 
 ROOT = "root"
 FACTORIAL = "factorial"
@@ -23,67 +24,67 @@ STOP = process_time() + RUNTIME
 
 
 class Tree():
-    def __init__(self, node, parent, process):
-        self.node = node
+    def __init__(self, data, parent, createdBy):
+        self.data = data
         self.children = []
         self.parent = parent
-        self.process = process
+        self.createdBy = createdBy
 
     def printTree(self):
-        print(self.node)
+        print(self.data)
         for i in range(len(self.children)):
-            self.children[i].printTree()
-
-
-def check(currNode, visited):
-    for i in visited:
-        if currNode == i.node:
-            return False
-    return True
+            if self.children[i].parent != None:
+                self.children[i].printTree()
 
 
 def bfs(queue, visited, root):  # function for BFS
-    visited.append(root)
     queue.append(root)
 
     while queue:
-        node = None
-        currNode = queue.pop(0)
-        visited.append(currNode)
 
-        bigNode = BigNumber.BigNumber.BigNumber(
-            currNode.node)  # New node for checking
+        node = None  # Node varialble for new node in tree
 
-        if (bigNode == END_POINT):  # Number found.
+        currNode = queue.pop(0)  # remove first item from Queue
+
+        visited.append(str(currNode.data))  # add this item in visited list
+
+        bigData = currNode.data
+
+        if (bigData == END_POINT):  # Number found.
             return currNode
 
         if (process_time() > STOP):  # Timeout
             return False
 
-        if (MAX_POINT > bigNode):
-            try:
-                # check if the bigNumber > MAX_POINT.
-                # try to create the new BigNumber.
-                newNode = BigNumber.BigNumber.BigNumber(factorial(bigNode))
+        if (MAX_POINT > bigData and floor(bigData) == bigData):
 
-                # if node is not in visited nodes, add the node in queue
-                if check(str(newNode), visited):
-                    node = Tree(
-                        str(newNode), currNode, FACTORIAL)
-                    queue.append(node)
-                    currNode.children.append(node)
-            except:
-                pass
+            newBigData = fac(bigData)  # Make the factorial of bigData
 
-        newNode = sqrt(bigNode)  # Root of node
-        newNode = newNode.__floor__()  # and floor of node in the same time
-        newNode = str(newNode)
-        node = Tree(str(newNode), currNode, ROOT + " " + FLOOR)
+            # if node is not in visited nodes, add the node in queue and create new Node in tree
+            if str(newBigData) not in visited:
+                node = Tree(newBigData, currNode, FACTORIAL)
+                queue.append(node)
+                currNode.children.append(node)
 
-        # if node is not in visited nodes, add the node in queue
-        if check(str(newNode), visited):
-            currNode.children.append(node)
-            queue.append(node)
+        if bigData >= 2:  # Make sqrt if the number is is above 2
+
+            newBigData = sqrt(bigData)  # make the sqrt of bigData
+
+            # if node is not in visited nodes, add the node in queue and create new Node in tree
+            if str(newBigData) not in visited:
+                node = Tree(newBigData, currNode, ROOT)
+                currNode.children.append(node)
+                queue.append(node)
+
+        if floor(bigData) != bigData:  # if the number is floating point
+
+            newBigData = floor(bigData)  # Make the floor
+
+            # if node is not in visited nodes, add the node in queue and create new Node in tree
+            if str(newBigData) not in visited:
+                node = Tree(newBigData, currNode,  FLOOR)
+                currNode.children.append(node)
+                queue.append(node)
 
     return False
 
@@ -92,7 +93,6 @@ def bfs(queue, visited, root):  # function for BFS
 # Initialize varialables
 
 root = Tree(START_POINT, None, "")  # Create Tree
-
 
 visited = []  # List for visited nodes
 queue = []  # Initialize a queue
@@ -112,11 +112,12 @@ if found.__class__ == Tree:
     # Add solution in file
     f = open("Breath_First_solution.txt", "w")
     for i in range(1, len(solutionTree)):
-        if (ROOT in solutionTree[i].process):
-            f.write(solutionTree[i].node + "  " + ROOT + FLOOR + "\n")
-            # f.write(FLOOR + "\n")
+        if (ROOT in solutionTree[i].createdBy):
+            f.write(str(solutionTree[i].data) + "  " + ROOT + "\n")
+        elif FLOOR in solutionTree[i].createdBy:
+            f.write(str(solutionTree[i].data) + "  " + FLOOR + "\n")
         else:
-            f.write(solutionTree[i].node + "  " + FACTORIAL + "\n")
+            f.write(str(solutionTree[i].data) + "  " + FACTORIAL + "\n")
 
     f.write("Time: " + resultTime[:6] + " seconds"+"\n")
     f.close()

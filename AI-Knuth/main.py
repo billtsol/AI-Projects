@@ -37,6 +37,58 @@ class Tree():
                     self.children[i].printTree()
 
 
+def bfs(queue, visited, root):  # function for BFS
+    queue.append(root)
+
+    while queue:
+
+        node = None  # Node varialble for new node in tree
+
+        currNode = queue.pop(0)  # remove first item from Queue
+
+        visited.append(str(currNode.data))  # add this item in visited list
+
+        bigData = currNode.data
+
+        if (bigData == END_POINT):  # Number found.
+            return currNode
+
+        if (process_time() > STOP):  # Timeout
+            return False
+
+        if (MAX_POINT > bigData and floor(bigData) == bigData):
+
+            newBigData = fac(bigData)  # Make the factorial of bigData
+
+            # if node is not in visited nodes, add the node in queue and create new Node in tree
+            if str(newBigData) not in visited:
+                node = Tree(newBigData, currNode, FACTORIAL)
+                queue.append(node)
+                currNode.children.append(node)
+
+        if bigData >= 2:  # Make sqrt if the number is is above 2
+
+            newBigData = sqrt(bigData)  # make the sqrt of bigData
+
+            # if node is not in visited nodes, add the node in queue and create new Node in tree
+            if str(newBigData) not in visited:
+                node = Tree(newBigData, currNode, ROOT)
+                currNode.children.append(node)
+                queue.append(node)
+
+        if floor(bigData) != bigData:  # if the number is floating point
+
+            newBigData = floor(bigData)  # Make the floor
+
+            # if node is not in visited nodes, add the node in queue and create new Node in tree
+            if str(newBigData) not in visited:
+                node = Tree(newBigData, currNode,  FLOOR)
+                currNode.children.append(node)
+                queue.append(node)
+
+    return False
+
+
 def iterative_deepening_dfs_rec(currNode, target, current_depth, max_depth, visited):
 
     if str(currNode.data) not in visited:
@@ -115,22 +167,31 @@ queue = []  # Initialize a queue
 root = Tree(START_POINT, None, "")
 
 
-depth = 1
+inputChoise = input("1 for BFS and 2 for IDFS: ")
 
-bottom_reached = False
+if (inputChoise == 2):
+    depth = 1
 
-while not bottom_reached:
+    bottom_reached = False
 
-    result, bottom_reached = iterative_deepening_dfs_rec(
-        root, END_POINT, 0, depth, visited)
+    while not bottom_reached:
 
-    if result is not None:  # Number Found
-        found = result
-        break
+        result, bottom_reached = iterative_deepening_dfs_rec(
+            root, END_POINT, 0, depth, visited)
 
-    depth *= 2
+        if result is not None:  # Number Found
+            found = result
+            break
+
+        depth *= 2
 
     resultTime = str(process_time() - (STOP - RUNTIME))
+elif (inputChoise == 2):
+    found = bfs(queue, visited, root)
+    resultTime = str(process_time() - (STOP - RUNTIME))
+else:
+    print("Wrong input")
+
 
 # Write the solution in the file
 
