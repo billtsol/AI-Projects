@@ -49,7 +49,7 @@ def iterative_deepening_dfs_rec(currNode, target, current_depth, max_depth, visi
         return currNode, True
 
     if (process_time() > STOP):  # Timeout
-        sys.exit()
+        return None, True
 
     if (MAX_POINT > bigData and floor(bigData) == bigData):
 
@@ -111,10 +111,8 @@ def iterative_deepening_dfs_rec(currNode, target, current_depth, max_depth, visi
 
 # Main program
 visited = []  # List for visited nodes
-queue = []  # Initialize a queue
 
 root = Tree(START_POINT, None, "")
-
 
 depth = 1
 
@@ -123,13 +121,14 @@ bottom_reached = False
 while not bottom_reached:
 
     result, bottom_reached = iterative_deepening_dfs_rec(
-        root, END_POINT, 0, depth, visited)
+        root, END_POINT, 0, 2**depth, visited)
 
     if result is not None:  # Number Found
         found = result
         break
 
-    depth *= 2
+    depth += 1
+    visited = []  # List for visited nodes
 
     resultTime = str(process_time() - (STOP - RUNTIME))
 
@@ -148,6 +147,7 @@ if found.__class__ == Tree:
                 solutionTree[i].createdBy + "\n")
 
     f.write("Time: " + resultTime[:6] + " seconds"+"\n")
+    f.write("and Depth: " + str(depth) + "\n")
     f.close()
 else:
     f = open("Iterative_Deepening_Solution.txt", "w")
