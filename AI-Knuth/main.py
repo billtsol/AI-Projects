@@ -8,7 +8,7 @@ START_POINT = 4.0
 
 # CHANGE THIS NUMBER
 END_POINT = 13
-# 597/
+
 # Large random number, set by creator.
 MAX_POINT = 9999999  # 9.999.999
 
@@ -17,6 +17,7 @@ FACTORIAL = "Factorial"
 FLOOR = "Floor"
 
 RUNTIME = 60.0
+
 # Limit: one CPU mitune
 STOP = process_time() + RUNTIME
 # process_time - It does not include the waiting time for resources
@@ -37,7 +38,7 @@ class Tree():
                     self.children[i].printTree()
 
 
-def bfs(queue, visited, root):  # function for BFS
+def bfs(queue, visited, root, target):  # function for BFS
     queue.append(root)
 
     while queue:
@@ -50,7 +51,7 @@ def bfs(queue, visited, root):  # function for BFS
 
         bigData = currNode.data
 
-        if (bigData == END_POINT):  # Number found.
+        if (bigData == target):  # Number found.
             return currNode
 
         if (process_time() > STOP):  # Timeout
@@ -100,7 +101,7 @@ def iterative_deepening_dfs_rec(currNode, target, current_depth, max_depth, visi
         return currNode, True
 
     if (process_time() > STOP):  # Timeout
-        sys.exit()
+        return None, True
 
     if (MAX_POINT > bigData and floor(bigData) == bigData):
 
@@ -151,7 +152,7 @@ def iterative_deepening_dfs_rec(currNode, target, current_depth, max_depth, visi
             # βρήκαμε λύση κατεβαίνοντας στο βάθος
             return result, True
 
-        # remove visited nodes from depth
+        # remove visited nodes from current depth
         if (currNode.children[i].data in visited):
             visited.remove(str(currNode.children[i].data))
 
@@ -166,10 +167,17 @@ queue = []  # Initialize a queue
 
 root = Tree(START_POINT, None, "")
 
+found = True
 
-inputChoise = input("1 for BFS and 2 for IDFS: ")
+inputChoise = int(input("1 for BFS and 2 for IDFS: "))
+
+
+fileName = ""
 
 if (inputChoise == 2):
+    target = int(input("Give the target: "))
+
+    fileName = "Iterative_Deepening_Solution"
     depth = 1
 
     bottom_reached = False
@@ -177,40 +185,49 @@ if (inputChoise == 2):
     while not bottom_reached:
 
         result, bottom_reached = iterative_deepening_dfs_rec(
-            root, END_POINT, 0, depth, visited)
+            root, target, 0, 2**depth, visited)
 
         if result is not None:  # Number Found
             found = result
             break
 
-        depth *= 2
+        depth += 1
+
+        visited = []  # List for visited node
 
     resultTime = str(process_time() - (STOP - RUNTIME))
-elif (inputChoise == 2):
-    found = bfs(queue, visited, root)
+
+elif (inputChoise == 1):
+    target = int(input("Give the target: "))
+
+    fileName = "Breath_First_solution"
+
+    found = bfs(queue, visited, root, target)
     resultTime = str(process_time() - (STOP - RUNTIME))
 else:
     print("Wrong input")
 
 
 # Write the solution in the file
-
 if found.__class__ == Tree:
-
     solutionTree = []
     while found != None:
         solutionTree.insert(0, found)
         found = found.parent
 
-    f = open("Iterative_Deepening_Solution.txt", "w")
+    f = open(fileName + ".txt", "w")
+    if inputChoise == 2:
+        f.write("Number " + str(target) +
+                " found on " + str(depth) + " depth \n")
+    else:
+        f.write("Number " + str(target) + " found \n")
     for i in range(1, len(solutionTree)):
-        f.write(str(solutionTree[i].data) + "  " +
-                solutionTree[i].createdBy + "\n")
+        f.write(solutionTree[i].createdBy + "\n")
 
     f.write("Time: " + resultTime[:6] + " seconds"+"\n")
     f.close()
-else:
-    f = open("Iterative_Deepening_Solution.txt", "w")
-    f.write("Number " + str(END_POINT) + " not found \n")
+elif inputChoise == 1 or inputChoise == 2:
+    f = open(fileName + ".txt", "w")
+    f.write("Number " + str(target) + " not found \n")
     f.write("Time: " + resultTime[:6] + " seconds"+"\n")
     f.close()
