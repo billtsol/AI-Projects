@@ -1,13 +1,9 @@
 # IMPORTS
-import sys  # import system library
 from time import process_time  # import time library
 from mpmath import *
 
 # Global Varialables
 START_POINT = 4.0
-
-# CHANGE THIS NUMBER
-END_POINT = 13
 
 # Large random number, set by creator.
 MAX_POINT = 9999999  # 9.999.999
@@ -16,12 +12,11 @@ ROOT = "Root"
 FACTORIAL = "Factorial"
 FLOOR = "Floor"
 
-RUNTIME = 60.0
+RUNTIME = 60.0 # seconds
 
 # Limit: one CPU mitune
 STOP = process_time() + RUNTIME
 # process_time - It does not include the waiting time for resources
-
 
 class Tree():
     def __init__(self, data, parent, createdBy):
@@ -91,72 +86,72 @@ def bfs(queue, visited, root, target):  # function for BFS
 
 
 def iterative_deepening_dfs_rec(currNode, target, current_depth, max_depth, visited):
-
+    bottom_reached = True # This variable is used because may this current node has been visited, so we do not need to check the and create new nodes.
     if str(currNode.data) not in visited:
         visited.append(str(currNode.data))
 
-    bigData = currNode.data
+        bigData = currNode.data
 
-    if bigData == target:  # Nunber Found
-        return currNode, True
+        if bigData == target:  # Nunber Found
+            return currNode, True
 
-    if (process_time() > STOP):  # Timeout
-        return None, True
-
-    if (MAX_POINT > bigData and floor(bigData) == bigData):
-
-        newBigData = fac(bigData)  # Make the factorial of bigData
-
-        # if node is not in visited nodes, add the node in queue and create new Node in tree
-        # if str(newBigData) not in visited:
-        node = Tree(newBigData, currNode, FACTORIAL)
-        if str(newBigData) not in visited:
-            currNode.children.append(node)
-
-    if bigData >= 2:  # Make sqrt if the number is is above 2
-
-        newBigData = sqrt(bigData)  # make the sqrt of bigData
-
-        # if node is not in visited nodes, add the node in queue and create new Node in tree
-        # if str(newBigData) not in visited:
-        node = Tree(newBigData, currNode, ROOT)
-        if str(newBigData) not in visited:
-            currNode.children.append(node)
-
-    if floor(bigData) != bigData:  # if the number is floating point
-
-        newBigData = floor(bigData)  # Make the floor
-
-        # if node is not in visited nodes, add the node in queue and create new Node in tree
-        # if str(newBigData) not in visited:
-        node = Tree(newBigData, currNode,  FLOOR)
-        if str(newBigData) not in visited:
-            currNode.children.append(node)
-
-    if current_depth == max_depth:
-        # max Depth
-        if len(currNode.children) > 0:
-            return None, False
-        else:
+        if (process_time() > STOP):  # Timeout
             return None, True
 
-    # Recurse with all children
-    bottom_reached = True
+        if (MAX_POINT > bigData and floor(bigData) == bigData):
 
-    for i in range(len(currNode.children)):
+            newBigData = fac(bigData)  # Make the factorial of bigData
 
-        result, bottom_reached_rec = iterative_deepening_dfs_rec(
-            currNode.children[i], target, current_depth + 1, max_depth, visited)
+            # if node is not in visited nodes, add the node in queue and create new Node in tree
+            # if str(newBigData) not in visited:
+            node = Tree(newBigData, currNode, FACTORIAL)
+            if str(newBigData) not in visited:
+                currNode.children.append(node)
 
-        if result is not None:
-            # βρήκαμε λύση κατεβαίνοντας στο βάθος
-            return result, True
+        if bigData >= 2:  # Make sqrt if the number is is above 2
 
-        # remove visited nodes from current depth
-        if (currNode.children[i].data in visited):
-            visited.remove(str(currNode.children[i].data))
+            newBigData = sqrt(bigData)  # make the sqrt of bigData
 
-        bottom_reached = bottom_reached and bottom_reached_rec
+            # if node is not in visited nodes, add the node in queue and create new Node in tree
+            # if str(newBigData) not in visited:
+            node = Tree(newBigData, currNode, ROOT)
+            if str(newBigData) not in visited:
+                currNode.children.append(node)
+
+        if floor(bigData) != bigData:  # if the number is floating point
+
+            newBigData = floor(bigData)  # Make the floor
+
+            # if node is not in visited nodes, add the node in queue and create new Node in tree
+            # if str(newBigData) not in visited:
+            node = Tree(newBigData, currNode,  FLOOR)
+            if str(newBigData) not in visited:
+                currNode.children.append(node)
+
+        if current_depth == max_depth:
+            # max Depth
+            if len(currNode.children) > 0:
+                return None, False
+            else:
+                return None, True
+
+        # Recurse with all children
+        bottom_reached = True
+
+        for i in range(len(currNode.children)):
+
+            result, bottom_reached_rec = iterative_deepening_dfs_rec(
+                currNode.children[i], target, current_depth + 1, max_depth, visited)
+
+            if result is not None:
+                # βρήκαμε λύση κατεβαίνοντας στο βάθος
+                return result, True
+
+            # remove visited nodes from current depth
+            if (currNode.children[i].data in visited):
+                visited.remove(str(currNode.children[i].data))
+
+            bottom_reached = bottom_reached and bottom_reached_rec
 
     return None, bottom_reached
 
